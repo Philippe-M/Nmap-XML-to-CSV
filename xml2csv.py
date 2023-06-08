@@ -27,6 +27,8 @@ def get_host_data(root):
     hosts = root.findall('host')
     for host in hosts:
         addr_info = []
+        mac_address = ""
+        mac_vendor = ""
 
         # Ignore hosts that are not 'up'
         if not host.findall('status')[0].attrib['state'] == 'up':
@@ -35,11 +37,17 @@ def get_host_data(root):
         # Get IP address and host info. If no hostname, then ''
         ip_address = host.findall('address')[0].attrib['addr']
 
-        # Get MAC address and host info. If no hostname, then ''
-        mac_address = host.findall('address')[1].attrib['addr']
+        try:
+            # Get MAC address and host info. If no hostname, then ''
+            mac_address = host.findall('address')[1].attrib['addr']
+        except IndexError:
+            mac_address = ''
 
-        # Get MAC vendor and host info. If no hostname, then ''
-        mac_vendor = host.findall('address')[1].attrib['vendor']
+        try:
+            # Get MAC vendor and host info. If no hostname, then ''
+            mac_vendor = host.findall('address')[1].attrib['vendor']
+        except IndexError:            
+            mac_vendor = ''
 
         host_name_element = host.findall('hostnames')
         try:
@@ -239,7 +247,7 @@ def print_data(data):
 
 def main():
     """Main function of the script."""
-    for filename in args.filename:
+    for filename in args.filename:       
 
         # Checks the file path
         if not os.path.exists(filename):
@@ -259,6 +267,7 @@ def main():
                           "check for XML entities.")
                     continue
         data = parse_xml(filename)
+        print('data : ' + str(data))
         if not data:
             print("[*] Zero hosts identitified as 'Up' or with 'open' ports. "
                   "Use the -u option to display ports that are 'open|filtered'. "
