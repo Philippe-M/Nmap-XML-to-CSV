@@ -267,7 +267,6 @@ def main():
                           "check for XML entities.")
                     continue
         data = parse_xml(filename)
-        print('data : ' + str(data))
         if not data:
             print("[*] Zero hosts identitified as 'Up' or with 'open' ports. "
                   "Use the -u option to display ports that are 'open|filtered'. "
